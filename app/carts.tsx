@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert,
 import { useSelector, useDispatch } from 'react-redux';
 import { addItemToCart, removeFromCart, updateCartItemQuantity, clearCart, saveCart, removeSavedCart, saveCartState } from '../store/cartSlice';
 import { RootState } from '../store';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { MenuItem } from '../store/menuSlice';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { addOrder } from '../store/orderHistorySlice';
@@ -37,6 +37,27 @@ export default function Carts() {
     );
     setFilteredMenu(filtered);
   }, [menu]);
+
+  const handleGoBack = () => {
+    if (currentCart.items.length > 0) {
+      Alert.alert(
+        "Confirm Navigation",
+        "Are you sure you want to go back? Any unsaved changes will be lost.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { 
+            text: "Yes", 
+            onPress: () => {
+              dispatch(clearCart());
+              router.replace('/(tabs)');
+            }
+          }
+        ]
+      );
+    } else {
+      router.replace('/(tabs)');
+    }
+  };
 
   const handleAddToCart = (product: MenuItem) => {
     dispatch(addItemToCart({ ...product, quantity: 1 }));
@@ -144,27 +165,6 @@ export default function Carts() {
     );
   };
 
-  const handleGoBack = () => {
-    if (currentCart.items.length > 0) {
-      Alert.alert(
-        "Confirm Navigation",
-        "Are you sure you want to go back? Any unsaved changes will be lost.",
-        [
-          { text: "Cancel", style: "cancel" },
-          { 
-            text: "Yes", 
-            onPress: () => {
-              dispatch(clearCart());
-              router.replace('/(tabs)');
-            }
-          }
-        ]
-      );
-    } else {
-      router.replace('/(tabs)');
-    }
-  };
-
   const handleDeleteCart = () => {
     const confirmDelete = () => {
       dispatch(removeSavedCart(currentCart.name));
@@ -198,109 +198,115 @@ export default function Carts() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardAvoidingView}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-            <AntDesign name="arrowleft" size={24} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.title}>{name}</Text>
-        </View>
-        <ScrollView style={styles.scrollView}>
-          <TouchableOpacity style={styles.saveButton} onPress={handleSaveCart}>
-            <MaterialIcons name="save" size={24} color="white" />
-            <Text style={styles.buttonText}>Save Cart</Text>
-          </TouchableOpacity>
-          <View style={styles.cartSection}>
-            <Text style={styles.sectionTitle}>Current Cart</Text>
-            {currentCart.items && currentCart.items.length > 0 ? (
-              currentCart.items.map((item) => (
-                <View key={item.id} style={styles.cartItem}>
-                  <Text style={styles.cartItemName}>{item.name} x{item.quantity}</Text>
-                  <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
-                  <View style={styles.cartItemButtons}>
-                    <TouchableOpacity
-                      style={styles.cartItemButton}
-                      onPress={() => handleRemoveFromCart(item.id)}
-                    >
-                      <AntDesign name="minus" size={24} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.cartItemButton}
-                      onPress={() => handleAddToCart(item)}
-                    >
-                      <AntDesign name="plus" size={24} color="white" />
-                    </TouchableOpacity>
+    <>
+      <Stack.Screen 
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleGoBack}>
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          title: name as string,
+        }} 
+      />
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
+        >
+          <ScrollView style={styles.scrollView}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSaveCart}>
+              <MaterialIcons name="save" size={24} color="white" />
+              <Text style={styles.buttonText}>Save Cart</Text>
+            </TouchableOpacity>
+            <View style={styles.cartSection}>
+              <Text style={styles.sectionTitle}>Current Cart</Text>
+              {currentCart.items && currentCart.items.length > 0 ? (
+                currentCart.items.map((item) => (
+                  <View key={item.id} style={styles.cartItem}>
+                    <Text style={styles.cartItemName}>{item.name} x{item.quantity}</Text>
+                    <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+                    <View style={styles.cartItemButtons}>
+                      <TouchableOpacity
+                        style={styles.cartItemButton}
+                        onPress={() => handleRemoveFromCart(item.id)}
+                      >
+                        <AntDesign name="minus" size={24} color="white" />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.cartItemButton}
+                        onPress={() => handleAddToCart(item)}
+                      >
+                        <AntDesign name="plus" size={24} color="white" />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              ))
-            ) : (
-              <Text style={styles.emptyText}>Cart is empty</Text>
-            )}
-            <Text style={styles.totalText}>Total: ${currentCart.total.toFixed(2)}</Text>
-            
-            <View style={styles.paymentSection}>
-              <Text style={styles.paymentLabel}>Amount Paid:</Text>
-              <TextInput
-                style={styles.paymentInput}
-                keyboardType="numeric"
-                value={amountPaid}
-                onChangeText={setAmountPaid}
-                placeholder="Enter amount paid"
-              />
-              <Text style={styles.changeText}>Change: ${change.toFixed(2)}</Text>
-              <TouchableOpacity style={styles.paidButton} onPress={handlePaid}>
-                <MaterialIcons name="payment" size={24} color="white" />
-                <Text style={styles.paidButtonText}>Paid</Text>
-              </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.emptyText}>Cart is empty</Text>
+              )}
+              <Text style={styles.totalText}>Total: ${currentCart.total.toFixed(2)}</Text>
+              
+              <View style={styles.paymentSection}>
+                <Text style={styles.paymentLabel}>Amount Paid:</Text>
+                <TextInput
+                  style={styles.paymentInput}
+                  keyboardType="numeric"
+                  value={amountPaid}
+                  onChangeText={setAmountPaid}
+                  placeholder="Enter amount paid"
+                />
+                <Text style={styles.changeText}>Change: ${change.toFixed(2)}</Text>
+                <TouchableOpacity style={styles.paidButton} onPress={handlePaid}>
+                  <MaterialIcons name="payment" size={24} color="white" />
+                  <Text style={styles.paidButtonText}>Paid</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
 
-          <View style={styles.menuSection}>
-            <Text style={styles.sectionTitle}>Menu Items</Text>
-            <View style={styles.searchInputContainer}>
-              <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search menu items..."
-                value={searchQuery}
-                onChangeText={handleSearch}
-              />
-            </View>
-            {filteredMenu.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.menuItem}
-                onPress={() => handleAddToCart(item)}
-              >
-                {item.image && (
-                  <Image source={{ uri: item.image }} style={styles.menuItemImage} />
-                )}
-                <View style={styles.menuItemInfo}>
-                  <Text style={styles.menuItemName}>{item.name}</Text>
-                  <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
-                </View>
+            <View style={styles.menuSection}>
+              <Text style={styles.sectionTitle}>Menu Items</Text>
+              <View style={styles.searchInputContainer}>
+                <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Search menu items..."
+                  value={searchQuery}
+                  onChangeText={handleSearch}
+                />
+              </View>
+              {filteredMenu.map((item) => (
                 <TouchableOpacity
-                  style={styles.addButton}
+                  key={item.id}
+                  style={styles.menuItem}
                   onPress={() => handleAddToCart(item)}
                 >
-                  <AntDesign name="plus" size={24} color="white" />
+                  {item.image && (
+                    <Image source={{ uri: item.image }} style={styles.menuItemImage} />
+                  )}
+                  <View style={styles.menuItemInfo}>
+                    <Text style={styles.menuItemName}>{item.name}</Text>
+                    <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => handleAddToCart(item)}
+                  >
+                    <AntDesign name="plus" size={24} color="white" />
+                  </TouchableOpacity>
                 </TouchableOpacity>
-              </TouchableOpacity>
-            ))}
+              ))}
+            </View>
+          </ScrollView>
+          <View style={styles.bottomButtonContainer}>
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteCart}>
+              <MaterialIcons name="delete" size={24} color="white" />
+              <Text style={styles.buttonText}>Delete Cart</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.bottomButtonContainer}>
-          <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteCart}>
-            <MaterialIcons name="delete" size={24} color="white" />
-            <Text style={styles.buttonText}>Delete Cart</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -313,21 +319,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  backButton: {
-    marginRight: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
   },
   saveButton: {
     backgroundColor: '#4CAF50',

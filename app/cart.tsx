@@ -30,6 +30,7 @@ export default function Cart() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.cartTitle}>{currentCart.name}</Text>
       <FlatList
         data={currentCart.items}
         renderItem={renderItem}
@@ -53,6 +54,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  cartTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    fontFamily: 'Roboto',
+  },
   cartItem: {
     backgroundColor: '#f9f9f9',
     padding: 20,
@@ -65,14 +72,17 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   productPrice: {
     fontSize: 16,
     color: '#888',
+    fontFamily: 'Roboto',
   },
   productQuantity: {
     fontSize: 16,
     color: '#888',
+    fontFamily: 'Roboto',
   },
   removeButton: {
     backgroundColor: '#FF3B30',
@@ -91,6 +101,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   checkoutButton: {
     backgroundColor: '#34C759',
@@ -101,10 +112,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   emptyText: {
     fontSize: 16,
     color: '#888',
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
 });
