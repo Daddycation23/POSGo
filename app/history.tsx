@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    fontFamily: 'Roboto',
   },
   orderItem: {
     backgroundColor: '#f0f0f0',
@@ -58,34 +59,41 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
+    fontFamily: 'Roboto',
   },
   cartName: {
     fontSize: 16,
     fontStyle: 'italic',
     marginBottom: 5,
+    fontFamily: 'Roboto',
   },
   orderTotal: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    fontFamily: 'Roboto',
   },
   amountPaid: {
     fontSize: 16,
     color: '#4CAF50',
     marginBottom: 2,
+    fontFamily: 'Roboto',
   },
   change: {
     fontSize: 16,
     color: '#2196F3',
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   orderItemText: {
     fontSize: 14,
     marginBottom: 5,
+    fontFamily: 'Roboto',
   },
   emptyText: {
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
+    fontFamily: 'Roboto',
   },
 });

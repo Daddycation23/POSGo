@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, SafeAreaView, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItemToCart, removeFromCart, updateCartItemQuantity, clearCart, saveCart, removeSavedCart } from '../store/cartSlice';
+import { addItemToCart, removeFromCart, updateCartItemQuantity, clearCart, saveCart, removeSavedCart, saveCartState } from '../store/cartSlice';
 import { RootState } from '../store';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { MenuItem } from '../store/menuSlice';
@@ -18,6 +18,7 @@ export default function Carts() {
   const dispatch = useDispatch();
   const menu = useSelector((state: RootState) => state.menu);
   const currentCart = useSelector((state: RootState) => state.cart.currentCart);
+  const savedCarts = useSelector((state: RootState) => state.cart.savedCarts);
   const [amountPaid, setAmountPaid] = useState('');
   const [change, setChange] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -114,11 +115,20 @@ export default function Carts() {
         { 
           text: "Yes", 
           onPress: () => {
-            dispatch(saveCart({ 
+            const updatedCart = { 
+              ...currentCart,
               name: name as string, 
               items: currentCart.items, 
               total: currentCart.total 
-            }));
+            };
+            dispatch(saveCart(updatedCart));
+            const updatedSavedCarts = savedCarts.map(cart => 
+              cart.name === updatedCart.name ? updatedCart : cart
+            );
+            if (!savedCarts.find(cart => cart.name === updatedCart.name)) {
+              updatedSavedCarts.push(updatedCart);
+            }
+            dispatch(saveCartState({ currentCart: updatedCart, savedCarts: updatedSavedCarts }));
             Alert.alert("Success", "Cart saved successfully!", [
               {
                 text: "OK",
@@ -158,6 +168,8 @@ export default function Carts() {
   const handleDeleteCart = () => {
     const confirmDelete = () => {
       dispatch(removeSavedCart(currentCart.name));
+      const updatedSavedCarts = savedCarts.filter(cart => cart.name !== currentCart.name);
+      dispatch(saveCartState({ currentCart: { id: '', name: '', items: [], total: 0 }, savedCarts: updatedSavedCarts }));
       dispatch(clearCart());
       Alert.alert("Success", "Cart deleted successfully!", [
         {
@@ -249,12 +261,15 @@ export default function Carts() {
 
           <View style={styles.menuSection}>
             <Text style={styles.sectionTitle}>Menu Items</Text>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search menu items..."
-              value={searchQuery}
-              onChangeText={handleSearch}
-            />
+            <View style={styles.searchInputContainer}>
+              <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search menu items..."
+                value={searchQuery}
+                onChangeText={handleSearch}
+              />
+            </View>
             {filteredMenu.map((item) => (
               <TouchableOpacity
                 key={item.id}
@@ -312,6 +327,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   saveButton: {
     backgroundColor: '#4CAF50',
@@ -327,6 +343,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
+    fontFamily: 'Roboto',
   },
   cartSection: {
     marginBottom: 20,
@@ -340,6 +357,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   cartItem: {
     flexDirection: 'row',
@@ -353,11 +371,13 @@ const styles = StyleSheet.create({
   cartItemName: {
     flex: 1,
     fontSize: 16,
+    fontFamily: 'Roboto',
   },
   cartItemPrice: {
     fontSize: 16,
     fontWeight: 'bold',
     marginHorizontal: 10,
+    fontFamily: 'Roboto',
   },
   cartItemButtons: {
     flexDirection: 'row',
@@ -387,10 +407,12 @@ const styles = StyleSheet.create({
   menuItemName: {
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   menuItemPrice: {
     fontSize: 14,
     color: '#888',
+    fontFamily: 'Roboto',
   },
   addButton: {
     backgroundColor: '#4CD964',
@@ -402,12 +424,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888',
     marginVertical: 20,
+    fontFamily: 'Roboto',
   },
   totalText: {
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'right',
     marginVertical: 10,
+    fontFamily: 'Roboto',
   },
   paymentSection: {
     marginTop: 20,
@@ -415,6 +439,7 @@ const styles = StyleSheet.create({
   paymentLabel: {
     fontSize: 16,
     marginBottom: 5,
+    fontFamily: 'Roboto',
   },
   paymentInput: {
     borderWidth: 1,
@@ -423,11 +448,13 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   changeText: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   paidButton: {
     backgroundColor: '#FF9500',
@@ -442,6 +469,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
+    fontFamily: 'Roboto',
   },
   bottomButtonContainer: {
     padding: 10,
@@ -457,13 +485,24 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
   },
-  searchInput: {
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    padding: 10,
+    paddingHorizontal: 10,
     marginBottom: 10,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 10,
     fontSize: 16,
+    fontFamily: 'Roboto',
   },
   menuList: {
     maxHeight: 300,

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface CartItem {
   id: string;
@@ -116,6 +117,12 @@ const cartSlice = createSlice({
     removeSavedCart: (state, action: PayloadAction<string>) => {
       state.savedCarts = state.savedCarts.filter(cart => cart.name !== action.payload);
     },
+    setCartState: (state, action: PayloadAction<CartState>) => {
+      return action.payload;
+    },
+    setSavedCarts: (state, action: PayloadAction<Cart[]>) => {
+      state.savedCarts = action.payload;
+    },
   },
 });
 
@@ -127,7 +134,43 @@ export const {
   saveCart, 
   updateCartItemQuantity, 
   clearCart,
-  removeSavedCart
+  removeSavedCart,
+  setCartState,
+  setSavedCarts
 } = cartSlice.actions;
+
+// Function to save cart state
+export const saveCartState = (state: CartState) => async (dispatch: any) => {
+  try {
+    const jsonValue = JSON.stringify(state);
+    await AsyncStorage.setItem('@cart_state', jsonValue);
+    
+    // Save saved carts separately
+    const savedCartsJson = JSON.stringify(state.savedCarts);
+    await AsyncStorage.setItem('@saved_carts', savedCartsJson);
+  } catch (e) {
+    console.error('Error saving cart state:', e);
+  }
+};
+
+// Function to load cart state
+export const loadCartState = () => async (dispatch: any) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@cart_state');
+    if (jsonValue != null) {
+      const cartState = JSON.parse(jsonValue);
+      dispatch(setCartState(cartState));
+    }
+
+    // Load saved carts separately
+    const savedCartsJson = await AsyncStorage.getItem('@saved_carts');
+    if (savedCartsJson != null) {
+      const savedCarts = JSON.parse(savedCartsJson);
+      dispatch(setSavedCarts(savedCarts));
+    }
+  } catch (e) {
+    console.error('Error loading cart state:', e);
+  }
+};
 
 export default cartSlice.reducer;

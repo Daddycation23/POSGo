@@ -2,11 +2,12 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, SafeAreaView, Image, Modal } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeMenuItem } from '../../store/menuSlice';
-import { loadCart, addCart } from '../../store/cartSlice';
+import { loadCart, addCart, saveCartState } from '../../store/cartSlice';
 import { RootState } from '../../store';
 import { useRouter } from 'expo-router';
 import { MenuItem } from '../../store/menuSlice';
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 
 interface Cart {
   id: string;
@@ -90,7 +91,11 @@ export default function ProductList() {
         total: 0,
       };
       dispatch(addCart(newCart));
-      router.push({ pathname: '/carts', params: { name: newCartName.trim() } });
+      dispatch(saveCartState({ currentCart: newCart, savedCarts: [...savedCarts, newCart] }));
+      router.push({
+        pathname: '/carts',
+        params: { name: newCartName.trim() }
+      });
       setIsNewCartModalVisible(false);
       setNewCartName('');
     } else {
@@ -100,7 +105,10 @@ export default function ProductList() {
 
   const handleOpenCart = (cartName: string) => {
     dispatch(loadCart(cartName));
-    router.push({ pathname: '/carts', params: { name: cartName } });
+    router.push({
+      pathname: '/carts',
+      params: { name: cartName }
+    });
   };
 
   const handleOpenSavedCarts = () => {
@@ -121,17 +129,19 @@ export default function ProductList() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
-        <View style={styles.searchContainer}>
-          <Text style={styles.searchTitle}>Search Menu Items</Text>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search menu items..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
         <View style={styles.menuSection}>
           <Text style={styles.sectionTitle}>Menu Items</Text>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchInputContainer}>
+              <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search menu items..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+            </View>
+          </View>
           {filteredMenu.length > 0 ? (
             filteredMenu.map(renderMenuItem)
           ) : (
@@ -140,10 +150,12 @@ export default function ProductList() {
         </View>
       </ScrollView>
       <View style={styles.bottomButtons}>
-        <TouchableOpacity style={styles.addItemButton} onPress={() => router.push('/add-item')}>
-          <AntDesign name="pluscircle" size={24} color="white" />
-          <Text style={styles.addItemButtonText}>Add New Menu</Text>
-        </TouchableOpacity>
+        <Link href="/add-item" asChild>
+          <TouchableOpacity style={styles.addItemButton}>
+            <AntDesign name="pluscircle" size={24} color="white" />
+            <Text style={styles.addItemButtonText}>Add New Menu</Text>
+          </TouchableOpacity>
+        </Link>
         <TouchableOpacity style={styles.cartButton} onPress={handleAddCart}>
           <MaterialIcons name="add-shopping-cart" size={24} color="white" />
           <Text style={styles.cartButtonText}>New Cart</Text>
@@ -157,10 +169,12 @@ export default function ProductList() {
             </View>
           )}
         </TouchableOpacity>
-        <TouchableOpacity style={styles.historyButton} onPress={() => router.push('/history')}>
-          <MaterialIcons name="history" size={24} color="white" />
-          <Text style={styles.historyButtonText}>Order History</Text>
-        </TouchableOpacity>
+        <Link href="/history" asChild>
+          <TouchableOpacity style={styles.historyButton}>
+            <MaterialIcons name="history" size={24} color="white" />
+            <Text style={styles.historyButtonText}>Order History</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
       <Modal
         animationType="slide"
@@ -253,11 +267,13 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   productPrice: {
     fontSize: 16,
     color: '#888',
     marginTop: 5,
+    fontFamily: 'Roboto',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -281,9 +297,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 24, // Larger font size
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'Roboto',
   },
   addItemButton: {
     backgroundColor: '#34C759',
@@ -305,18 +322,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 5,
+    fontFamily: 'Roboto',
   },
   emptyText: {
     textAlign: 'center',
     fontSize: 16,
     marginTop: 10,
     color: '#888',
+    fontFamily: 'Roboto',
   },
   totalText: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 10,
     textAlign: 'right',
+    fontFamily: 'Roboto',
   },
   cartSection: {
     marginBottom: 20,
@@ -326,11 +346,13 @@ const styles = StyleSheet.create({
   },
   menuSection: {
     paddingHorizontal: 10,
+    paddingTop: 20,
   },
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginLeft: 10,
+    marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   cartItem: {
     backgroundColor: '#f0f0f0',
@@ -341,15 +363,18 @@ const styles = StyleSheet.create({
   cartItemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   cartItemName: {
     fontSize: 16,
     flex: 1,
+    fontFamily: 'Roboto',
   },
   cartItemPrice: {
     fontSize: 16,
     fontWeight: 'bold',
     marginHorizontal: 10,
+    fontFamily: 'Roboto',
   },
   paymentSection: {
     marginTop: 20,
@@ -361,6 +386,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    fontFamily: 'Roboto',
   },
   paymentInput: {
     borderWidth: 1,
@@ -369,11 +395,13 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'Roboto',
   },
   changeText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#34C759',
+    fontFamily: 'Roboto',
   },
   paidButton: {
     backgroundColor: '#4CD964',
@@ -389,6 +417,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
+    fontFamily: 'Roboto',
   },
   bottomButtons: {
     flexDirection: 'row',
@@ -418,6 +447,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 5,
+    fontFamily: 'Roboto',
   },
   cartHeader: {
     flexDirection: 'row',
@@ -444,6 +474,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 5,
+    fontFamily: 'Roboto',
   },
   modalContainer: {
     flex: 1,
@@ -462,6 +493,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    fontFamily: 'Roboto',
   },
   input: {
     borderWidth: 1,
@@ -470,6 +502,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 20,
     fontSize: 18,
+    fontFamily: 'Roboto',
   },
   modalButtons: {
     flexDirection: 'row',
@@ -491,6 +524,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   cartsButton: {
     backgroundColor: '#5856D6',
@@ -512,6 +546,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 5,
+    fontFamily: 'Roboto',
   },
   closeButton: {
     backgroundColor: '#FF9500',
@@ -530,11 +565,13 @@ const styles = StyleSheet.create({
   savedCartName: {
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   savedCartTotal: {
     fontSize: 16,
     color: '#888',
     marginTop: 5,
+    fontFamily: 'Roboto',
   },
   badge: {
     position: 'absolute',
@@ -551,64 +588,25 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  searchableMenuList: {
-    maxHeight: 300,
-  },
-  searchableMenuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  searchableMenuItemImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  searchableMenuItemInfo: {
-    flex: 1,
-  },
-  searchableMenuItemName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  searchableMenuItemPrice: {
-    fontSize: 14,
-    color: '#888',
+    fontFamily: 'Roboto',
   },
   searchContainer: {
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    marginTop: 20,
-  },
-  searchTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 10,
   },
-  searchInput: {
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
     borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 10,
     fontSize: 16,
-  },
-  searchResultsContainer: {
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  menuList: {
-    paddingHorizontal: 10,
+    fontFamily: 'Roboto',
   },
 });

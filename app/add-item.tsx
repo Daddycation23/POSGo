@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    fontFamily: 'Roboto',
   },
   input: {
     borderWidth: 1,
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
+    fontFamily: 'Roboto',
   },
   imageButtonsContainer: {
     flexDirection: 'row',
@@ -146,6 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
+    fontFamily: 'Roboto',
   },
   imagePreview: {
     width: 200,
@@ -165,5 +168,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'Roboto',
   },
 });
