@@ -11,6 +11,8 @@ export default function History() {
       <Text style={styles.orderDate}>{new Date(item.date).toLocaleString()}</Text>
       <Text style={styles.cartName}>Cart: {item.cartName}</Text>
       <Text style={styles.orderTotal}>Total: ${item.total.toFixed(2)}</Text>
+      <Text style={styles.amountPaid}>Amount Paid: ${item.amountPaid.toFixed(2)}</Text>
+      <Text style={styles.change}>Change: ${item.change.toFixed(2)}</Text>
       <FlatList
         data={item.items}
         renderItem={({ item: orderItem }: { item: any }) => (
@@ -65,6 +67,16 @@ const styles = StyleSheet.create({
   orderTotal: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  amountPaid: {
+    fontSize: 16,
+    color: '#4CAF50',
+    marginBottom: 2,
+  },
+  change: {
+    fontSize: 16,
+    color: '#2196F3',
     marginBottom: 10,
   },
   orderItemText: {

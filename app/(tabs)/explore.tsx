@@ -8,15 +8,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
+  const exploreItems = [
+    { id: '1', title: 'File-based routing', content: (
+      <>
         <ThemedText>
           This app has two screens:{' '}
           <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
@@ -29,14 +23,16 @@ export default function TabTwoScreen() {
         <ExternalLink href="https://docs.expo.dev/router/introduction">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
+      </>
+    )},
+    { id: '2', title: 'Android, iOS, and web support', content: (
+      <ThemedText>
+        You can open this project on Android, iOS, and the web. To open the web version, press{' '}
+        <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+      </ThemedText>
+    )},
+    { id: '3', title: 'Images', content: (
+      <>
         <ThemedText>
           For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
           <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
@@ -46,8 +42,10 @@ export default function TabTwoScreen() {
         <ExternalLink href="https://reactnative.dev/docs/images">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
+      </>
+    )},
+    { id: '4', title: 'Custom fonts', content: (
+      <>
         <ThemedText>
           Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
           <ThemedText style={{ fontFamily: 'SpaceMono' }}>
@@ -57,8 +55,10 @@ export default function TabTwoScreen() {
         <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
+      </>
+    )},
+    { id: '5', title: 'Light and dark mode components', content: (
+      <>
         <ThemedText>
           This template has light and dark mode support. The{' '}
           <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
@@ -67,23 +67,39 @@ export default function TabTwoScreen() {
         <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
+      </>
+    )},
+    { id: '6', title: 'Animations', content: (
+      <>
         <ThemedText>
           This template includes an example of an animated component. The{' '}
           <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
           the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
           to create a waving hand animation.
         </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
+        {Platform.OS === 'ios' && (
+          <ThemedText>
+            The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
+            component provides a parallax effect for the header image.
+          </ThemedText>
+        )}
+      </>
+    )},
+  ];
+
+  return (
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Explore</ThemedText>
+      </ThemedView>
+      <ThemedText>This app includes example code to help you get started.</ThemedText>
+      {exploreItems.map((item) => (
+        <Collapsible key={item.id} title={item.title}>
+          {item.content}
+        </Collapsible>
+      ))}
     </ParallaxScrollView>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, SafeAreaView, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItemToCart, removeFromCart, updateCartItemQuantity, clearCart, saveCart, removeSavedCart } from '../store/cartSlice';
@@ -20,16 +20,26 @@ export default function Carts() {
   const currentCart = useSelector((state: RootState) => state.cart.currentCart);
   const [amountPaid, setAmountPaid] = useState('');
   const [change, setChange] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>(menu);
 
   useEffect(() => {
     const paid = parseFloat(amountPaid) || 0;
     setChange(Math.max(0, paid - currentCart.total));
   }, [amountPaid, currentCart.total]);
 
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+    const lowercasedQuery = query.toLowerCase();
+    const filtered = menu.filter(item =>
+      item.name.toLowerCase().includes(lowercasedQuery)
+    );
+    setFilteredMenu(filtered);
+  }, [menu]);
+
   const handleAddToCart = (product: MenuItem) => {
     dispatch(addItemToCart({ ...product, quantity: 1 }));
   };
-
 
   const handleRemoveFromCart = (productId: string) => {
     const existingItem = currentCart.items.find(item => item.id === productId);
@@ -73,6 +83,8 @@ export default function Carts() {
       total: currentCart.total,
       items: currentCart.items,
       cartName: currentCart.name,
+      amountPaid: paidAmount,
+      change: paidAmount - currentCart.total,
     };
     dispatch(addOrder(order));
     dispatch(removeSavedCart(currentCart.name));
@@ -173,45 +185,6 @@ export default function Carts() {
     }
   };
 
-  const renderCartItem = ({ item }: { item: CartItem }) => (
-    <View style={styles.cartItem}>
-      <Text style={styles.cartItemName}>{item.name} x{item.quantity}</Text>
-      <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
-      <View style={styles.cartItemButtons}>
-        <TouchableOpacity
-          style={styles.cartItemButton}
-          onPress={() => handleRemoveFromCart(item.id)}
-        >
-          <AntDesign name="minus" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.cartItemButton}
-          onPress={() => handleAddToCart(item)}
-        >
-          <AntDesign name="plus" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
-  const renderMenuItem = ({ item }: { item: MenuItem }) => (
-    <View style={styles.menuItem}>
-      {item.image && (
-        <Image source={{ uri: item.image }} style={styles.menuItemImage} />
-      )}
-      <View style={styles.menuItemInfo}>
-        <Text style={styles.menuItemName}>{item.name}</Text>
-        <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => handleAddToCart(item)}
-      >
-        <AntDesign name="plus" size={24} color="white" />
-      </TouchableOpacity>
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView 
@@ -232,7 +205,26 @@ export default function Carts() {
           <View style={styles.cartSection}>
             <Text style={styles.sectionTitle}>Current Cart</Text>
             {currentCart.items && currentCart.items.length > 0 ? (
-              currentCart.items.map((item) => renderCartItem({ item }))
+              currentCart.items.map((item) => (
+                <View key={item.id} style={styles.cartItem}>
+                  <Text style={styles.cartItemName}>{item.name} x{item.quantity}</Text>
+                  <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+                  <View style={styles.cartItemButtons}>
+                    <TouchableOpacity
+                      style={styles.cartItemButton}
+                      onPress={() => handleRemoveFromCart(item.id)}
+                    >
+                      <AntDesign name="minus" size={24} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.cartItemButton}
+                      onPress={() => handleAddToCart(item)}
+                    >
+                      <AntDesign name="plus" size={24} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))
             ) : (
               <Text style={styles.emptyText}>Cart is empty</Text>
             )}
@@ -257,7 +249,33 @@ export default function Carts() {
 
           <View style={styles.menuSection}>
             <Text style={styles.sectionTitle}>Menu Items</Text>
-            {menu.map((item) => renderMenuItem({ item }))}
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search menu items..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+            {filteredMenu.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.menuItem}
+                onPress={() => handleAddToCart(item)}
+              >
+                {item.image && (
+                  <Image source={{ uri: item.image }} style={styles.menuItemImage} />
+                )}
+                <View style={styles.menuItemInfo}>
+                  <Text style={styles.menuItemName}>{item.name}</Text>
+                  <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => handleAddToCart(item)}
+                >
+                  <AntDesign name="plus" size={24} color="white" />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
         <View style={styles.bottomButtonContainer}>
@@ -270,7 +288,6 @@ export default function Carts() {
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -355,9 +372,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   menuItemImage: {
     width: 50,
@@ -440,5 +456,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     borderRadius: 5,
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  menuList: {
+    maxHeight: 300,
   },
 });

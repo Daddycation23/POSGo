@@ -13,6 +13,8 @@ interface Order {
   total: number;
   items: OrderItem[];
   cartName: string;
+  amountPaid: number;
+  change: number;
 }
 
 const initialState: Order[] = [];

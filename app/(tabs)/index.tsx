@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, SafeAreaView, Image, Modal, FlatList } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, SafeAreaView, Image, Modal } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeMenuItem } from '../../store/menuSlice';
 import { loadCart, addCart } from '../../store/cartSlice';
@@ -23,6 +23,13 @@ export default function ProductList() {
   const [newCartName, setNewCartName] = useState('');
   const [isCartsModalVisible, setIsCartsModalVisible] = useState(false);
   const savedCarts = useSelector((state: RootState) => state.cart.savedCarts);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredMenu = searchQuery
+    ? menu.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : menu;
 
   const handleRemoveMenuItem = (productId: string) => {
     Alert.alert(
@@ -35,8 +42,8 @@ export default function ProductList() {
     );
   };
 
-  const renderMenuItem = ({ item }: { item: MenuItem }) => (
-    <View style={styles.productItem}>
+  const renderMenuItem = (item: MenuItem) => (
+    <View key={item.id} style={styles.productItem}>
       {item.image && (
         <Image source={{ uri: item.image }} style={styles.productImage} />
       )}
@@ -54,7 +61,24 @@ export default function ProductList() {
   );
 
   const handleAddCart = () => {
-    setIsNewCartModalVisible(true);
+    if (menu.length === 0) {
+      Alert.alert(
+        "No Menu Items",
+        "You need to add menu items before creating a cart. Would you like to add a menu item now?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel"
+          },
+          {
+            text: "Add Menu Item",
+            onPress: () => router.push('/add-item')
+          }
+        ]
+      );
+    } else {
+      setIsNewCartModalVisible(true);
+    }
   };
 
   const handleCreateCart = () => {
@@ -87,8 +111,8 @@ export default function ProductList() {
     }
   };
 
-  const renderSavedCartItem = ({ item }: { item: Cart }) => (
-    <TouchableOpacity style={styles.savedCartItem} onPress={() => handleOpenCart(item.name)}>
+  const renderSavedCartItem = (item: Cart) => (
+    <TouchableOpacity key={item.id} style={styles.savedCartItem} onPress={() => handleOpenCart(item.name)}>
       <Text style={styles.savedCartName}>{item.name}</Text>
       <Text style={styles.savedCartTotal}>Total: ${item.total.toFixed(2)}</Text>
     </TouchableOpacity>
@@ -97,12 +121,21 @@ export default function ProductList() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
+        <View style={styles.searchContainer}>
+          <Text style={styles.searchTitle}>Search Menu Items</Text>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search menu items..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
         <View style={styles.menuSection}>
-          <Text style={styles.sectionTitle}>Home</Text>
-          {menu.length > 0 ? (
-            menu.map((item) => renderMenuItem({ item }))
+          <Text style={styles.sectionTitle}>Menu Items</Text>
+          {filteredMenu.length > 0 ? (
+            filteredMenu.map(renderMenuItem)
           ) : (
-            <Text style={styles.emptyText}>No menu items. Add some!</Text>
+            <Text style={styles.emptyText}>No menu items found.</Text>
           )}
         </View>
       </ScrollView>
@@ -147,7 +180,10 @@ export default function ProductList() {
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setIsNewCartModalVisible(false)}
+                onPress={() => {
+                  setIsNewCartModalVisible(false);
+                  setNewCartName('');
+                }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
@@ -170,12 +206,13 @@ export default function ProductList() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Saved Carts</Text>
-            <FlatList
-              data={savedCarts}
-              renderItem={renderSavedCartItem}
-              keyExtractor={(item) => item.name}
-              ListEmptyComponent={<Text style={styles.emptyText}>No saved carts</Text>}
-            />
+            <ScrollView>
+              {savedCarts.length > 0 ? (
+                savedCarts.map(renderSavedCartItem)
+              ) : (
+                <Text style={styles.emptyText}>No saved carts</Text>
+              )}
+            </ScrollView>
             <TouchableOpacity
               style={[styles.modalButton, styles.closeButton]}
               onPress={() => setIsCartsModalVisible(false)}
@@ -195,7 +232,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 10,
   },
   productItem: {
     backgroundColor: '#f9f9f9',
@@ -289,7 +325,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   menuSection: {
-    marginBottom: 20,
+    paddingHorizontal: 10,
   },
   sectionTitle: {
     fontSize: 22,
@@ -515,5 +551,64 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  searchableMenuList: {
+    maxHeight: 300,
+  },
+  searchableMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  searchableMenuItemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  searchableMenuItemInfo: {
+    flex: 1,
+  },
+  searchableMenuItemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  searchableMenuItemPrice: {
+    fontSize: 14,
+    color: '#888',
+  },
+  searchContainer: {
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    marginTop: 20,
+  },
+  searchTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  searchInput: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+    fontSize: 16,
+  },
+  searchResultsContainer: {
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+  menuList: {
+    paddingHorizontal: 10,
   },
 });
