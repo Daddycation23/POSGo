@@ -128,20 +128,23 @@ export default function ProductList() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container}>
-        <View style={styles.menuSection}>
-          <Text style={styles.sectionTitle}>Menu Items</Text>
-          <View style={styles.searchContainer}>
-            <View style={styles.searchInputContainer}>
-              <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search menu items..."
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-            </View>
+      <View style={styles.stickyHeader}>
+        <Text style={styles.sectionTitle}>Menu Items</Text>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputContainer}>
+            <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search menu items..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
           </View>
+        </View>
+      </View>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.spacer} />
+        <View style={styles.menuSection}>
           {filteredMenu.length > 0 ? (
             filteredMenu.map(renderMenuItem)
           ) : (
@@ -169,12 +172,6 @@ export default function ProductList() {
             </View>
           )}
         </TouchableOpacity>
-        <Link href="/history" asChild>
-          <TouchableOpacity style={styles.historyButton}>
-            <MaterialIcons name="history" size={24} color="white" />
-            <Text style={styles.historyButtonText}>Order History</Text>
-          </TouchableOpacity>
-        </Link>
       </View>
       <Modal
         animationType="slide"
@@ -244,8 +241,49 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  container: {
+  stickyHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    zIndex: 1,
+    paddingTop: 60, // Adjust this value to lower the sticky header
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  scrollView: {
     flex: 1,
+  },
+  scrollViewContent: {
+    paddingTop: 150, // Adjust this value to match the height of your sticky header
+  },
+  spacer: {
+    height: 20, // Add some space between the sticky header and the first menu item
+  },
+  searchContainer: {
+    marginBottom: 10,
+  },
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 10,
+    fontSize: 16,
+    fontFamily: 'Roboto',
+  },
+  menuSection: {
+    paddingHorizontal: 10,
   },
   productItem: {
     backgroundColor: '#f9f9f9',
@@ -303,7 +341,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   addItemButton: {
-    backgroundColor: '#34C759',
+    backgroundColor: '#007AFF', // Changed to iOS blue
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -344,12 +382,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
-  menuSection: {
-    paddingHorizontal: 10,
-    paddingTop: 20,
-  },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 24, // Updated to match Order History title size
     fontWeight: 'bold',
     marginBottom: 10,
     fontFamily: 'Roboto',
@@ -428,7 +462,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
   historyButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#007AFF', // Changed to iOS blue
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -455,7 +489,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cartButton: {
-    backgroundColor: '#FF9500',
+    backgroundColor: '#007AFF', // Changed to iOS blue
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -527,7 +561,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   cartsButton: {
-    backgroundColor: '#5856D6',
+    backgroundColor: '#007AFF', // Changed to iOS blue
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -588,25 +622,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
-    fontFamily: 'Roboto',
-  },
-  searchContainer: {
-    marginBottom: 10,
-  },
-  searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 10,
-    fontSize: 16,
     fontFamily: 'Roboto',
   },
 });
