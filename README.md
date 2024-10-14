@@ -27,7 +27,7 @@ Tabs:
 ![An image of the cart with menu items](assets/images/POSGo_CartCreationPage.png)
 
 5. The orders history screen is where you can view all the orders that you have made.
-![An image of the orders history screen](assets/images/POSGo_OrdersHistory.png)
+![An image of the orders history screen](assets/images/POSGo_OrderHistory.png)
 
 
 ## How to install
