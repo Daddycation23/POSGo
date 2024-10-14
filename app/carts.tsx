@@ -216,7 +216,7 @@ export default function Carts() {
         >
           <ScrollView style={styles.scrollView}>
             <TouchableOpacity style={styles.saveButton} onPress={handleSaveCart}>
-              <MaterialIcons name="save" size={24} color="white" />
+              <MaterialIcons name="add-shopping-cart" size={24} color="white" />
               <Text style={styles.buttonText}>Save Cart</Text>
             </TouchableOpacity>
             <View style={styles.cartSection}>
@@ -246,19 +246,22 @@ export default function Carts() {
                 <Text style={styles.emptyText}>Cart is empty</Text>
               )}
               <Text style={styles.totalText}>Total: ${currentCart.total.toFixed(2)}</Text>
-              
+             
               <View style={styles.paymentSection}>
                 <Text style={styles.paymentLabel}>Amount Paid:</Text>
-                <TextInput
-                  style={styles.paymentInput}
-                  keyboardType="numeric"
-                  value={amountPaid}
-                  onChangeText={setAmountPaid}
-                  placeholder="Enter amount paid"
-                />
+                <View style={styles.paymentInputContainer}>
+                  <MaterialIcons name="attach-money" size={24} color="#888" style={styles.paymentIcon} />
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="numeric"
+                    value={amountPaid}
+                    onChangeText={setAmountPaid}
+                    placeholder="Enter amount paid"
+                  />
+                </View>
                 <Text style={styles.changeText}>Change: ${change.toFixed(2)}</Text>
                 <TouchableOpacity style={styles.paidButton} onPress={handlePaid}>
-                  <MaterialIcons name="payment" size={24} color="white" />
+                  <MaterialIcons name="paid" size={24} color="white" />
                   <Text style={styles.paidButtonText}>Paid</Text>
                 </TouchableOpacity>
               </View>
@@ -321,17 +324,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007AFF', // Changed to match the iOS blue color
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 15,
     borderRadius: 5,
-    margin: 10,
+    marginBottom: 20,
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
     fontFamily: 'Roboto',
@@ -406,7 +412,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   addButton: {
-    backgroundColor: '#4CD964',
+    backgroundColor: '#007AFF',
     padding: 10,
     borderRadius: 5,
   },
@@ -432,13 +438,21 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: 'Roboto',
   },
-  paymentInput: {
+  paymentInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+    marginBottom: 10,
+  },
+  paymentIcon: {
+    padding: 10,
+  },
+  paymentInput: {
+    flex: 1,
     padding: 10,
     fontSize: 16,
-    marginBottom: 10,
     fontFamily: 'Roboto',
   },
   changeText: {
@@ -448,7 +462,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   paidButton: {
-    backgroundColor: '#FF9500',
+    backgroundColor: '#FF9500', // Orange color for the paid button
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -469,7 +483,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
   deleteButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#FF3B30', // Red color for the delete button
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

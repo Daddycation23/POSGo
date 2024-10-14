@@ -196,13 +196,13 @@ export default function ProductList() {
                   setNewCartName('');
                 }}
               >
-                <Text style={styles.modalButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.createButton]}
                 onPress={handleCreateCart}
               >
-                <Text style={styles.modalButtonText}>Create</Text>
+                <Text style={styles.createButtonText}>Create</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -225,10 +225,10 @@ export default function ProductList() {
               )}
             </ScrollView>
             <TouchableOpacity
-              style={[styles.modalButton, styles.closeButton]}
+              style={styles.closeButton}
               onPress={() => setIsCartsModalVisible(false)}
             >
-              <Text style={styles.modalButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -549,12 +549,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#007AFF',
   },
   createButton: {
-    backgroundColor: '#4CD964',
+    backgroundColor: '#007AFF',
   },
-  modalButtonText: {
+  cancelButtonText: {
+    color: '#007AFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Roboto',
+  },
+  createButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
@@ -583,8 +591,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   closeButton: {
-    backgroundColor: '#FF9500',
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 15,
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  closeButtonText: {
+    color: '#007AFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   savedCartsSection: {
     marginTop: 20,

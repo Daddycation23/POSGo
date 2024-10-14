@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addMenuItem } from '../store/menuSlice';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 
 export default function AddItem() {
   const dispatch = useDispatch();
@@ -76,36 +76,39 @@ export default function AddItem() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add New Menu Item</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Item Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Price"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-      />
-      <View style={styles.imageButtonsContainer}>
-        <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
-          <MaterialIcons name="photo-library" size={24} color="white" />
-          <Text style={styles.imageButtonText}>Choose Image</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
-          <MaterialIcons name="camera-alt" size={24} color="white" />
-          <Text style={styles.imageButtonText}>Take Photo</Text>
+    <>
+      <Stack.Screen options={{ title: "Add New Menu Item" }} />
+      <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder="Item Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Price"
+          value={price}
+          onChangeText={setPrice}
+          keyboardType="numeric"
+        />
+        <View style={styles.imageButtonsContainer}>
+          <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+            <MaterialIcons name="photo-library" size={24} color="white" />
+            <Text style={styles.buttonText}>Choose Image</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
+            <MaterialIcons name="camera-alt" size={24} color="white" />
+            <Text style={styles.buttonText}>Take Photo</Text>
+          </TouchableOpacity>
+        </View>
+        {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
+        <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+          <AntDesign name="pluscircle" size={24} color="white" />
+          <Text style={styles.addButtonText}>Add Item</Text>
         </TouchableOpacity>
       </View>
-      {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
-      <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-        <Text style={styles.addButtonText}>Add Item</Text>
-      </TouchableOpacity>
-    </View>
+    </>
   );
 }
 
@@ -114,38 +117,50 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    fontFamily: 'Roboto',
-  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
+    padding: 15,
+    marginBottom: 20,
     fontFamily: 'Roboto',
+    fontSize: 16,
   },
   imageButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   imageButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 50,
+    flex: 1,
+    marginHorizontal: 5,
   },
-  imageButtonText: {
+  addButton: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 60,
+  },
+  buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    fontFamily: 'Roboto',
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
     fontFamily: 'Roboto',
@@ -155,19 +170,8 @@ const styles = StyleSheet.create({
     height: 150,
     resizeMode: 'cover',
     alignSelf: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
+    marginTop: 10,
     borderRadius: 5,
-  },
-  addButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 5,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontFamily: 'Roboto',
   },
 });
