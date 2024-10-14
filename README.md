@@ -1,50 +1,41 @@
-# Welcome to your Expo app 👋
+# Welcome to POSGo, the point of sale app on-the-go! 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a point of sale app on-the-go for small businesses, it is free and open source, built with React Native and Expo.
 
-## Get started
+## Navigating the app
+There are 3 buttons and 2 tabs when you open the app:
+Buttons:
+   - The "Add New Menu" button takes you to the add new menu item screen.
+   - The "New Cart" button takes you to the new cart screen.
+   - The "Saved Carts" button takes you to the saved carts screen, which is basically just new carts that you saved.
 
-1. Install dependencies
+Tabs:
+   - The home tab takes you to the home screen.
+   - The orders history tab takes you to the orders history screen.
 
-   ```bash
-   npm install
-   ```
+1. The home screen is the main screen you'll see when you open the app. It shows a list of all the products in the menu.
+![An image of the home screen](assets/images/POSGo_HomePage.png)
+![An image of the home screen with menu items](assets/images/POSGo_HomePageWithMenuItems.png)
 
-2. Start the app
+2. The add new menu item screen is where you can add a new menu item to the menu.
+![An image of the add new menu item screen](assets/images/POSGo_AddNewMenuItem.png)
 
-   ```bash
-    npx expo start
-   ```
+3. The new cart screen is where you can create a new cart.
+![An image of the new cart screen](assets/images/POSGO_AddNewCart.png)
 
-In the output, you'll find options to open the app in a
+4. In either new cart or saved cart, you can edit the cart by adding the menu items.
+![An image of the cart with menu items](assets/images/POSGo_CartCreationPage.png)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+5. The orders history screen is where you can view all the orders that you have made.
+![An image of the orders history screen](assets/images/POSGo_OrdersHistory.png)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+## How to install
+1. Clone the repo
+2. Run `npm install`
+3. Run `npx expo start`
 
-When you're ready, run:
+## I look forward to your contributions!
+PLEASE IF YOU HAPPEN TO COME ACROSS THIS PROJECT AND FIND IT USEFUL AND INTERESTING, I'D LOVE TO HAVE YOU CONTRIBUTE TO THIS PROJECT AND PLEASE HELP ME MAKE MY BABY BETTER, THANK YOU BELY MUCHIE ARIGATOU GOZAIMASU🙏🙇‍♂️🙇‍♀️.
 
-```bash
-npm run reset-project
-```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
