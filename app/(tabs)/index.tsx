@@ -65,7 +65,7 @@ export default function ProductList() {
     if (menu.length === 0) {
       Alert.alert(
         "No Menu Items",
-        "You need to add menu items before creating a cart. Would you like to add a menu item now?",
+        "No items in menu. Add some?",
         [
           {
             text: "Cancel",
@@ -148,7 +148,7 @@ export default function ProductList() {
           {filteredMenu.length > 0 ? (
             filteredMenu.map(renderMenuItem)
           ) : (
-            <Text style={styles.emptyText}>No menu items found.</Text>
+            <Text style={styles.emptyText}>No items found</Text>
           )}
         </View>
       </ScrollView>
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   addButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#7EFF8E', // Updated color
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   removeButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#FF3B30', // Changed to red (iOS red color)
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   addItemButton: {
-    backgroundColor: '#007AFF', // Changed to iOS blue
+    backgroundColor: '#57FF63', // Updated color
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -363,10 +363,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   emptyText: {
-    textAlign: 'center',
     fontSize: 16,
-    marginTop: 10,
-    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#888', // Adding a consistent color
+    padding: 20, // Adding consistent padding
     fontFamily: 'Roboto',
   },
   totalText: {
@@ -438,16 +439,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   paidButton: {
-    backgroundColor: '#4CD964',
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 5,
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#57FF63',
   },
   paidButtonText: {
-    color: 'white',
+    color: '#57FF63',
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
@@ -489,7 +492,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cartButton: {
-    backgroundColor: '#007AFF', // Changed to iOS blue
+    backgroundColor: '#57FF63', // Updated color
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -547,29 +550,30 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '48%',
     alignItems: 'center',
+    borderWidth: 1,
   },
   cancelButton: {
     backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: '#FF3B30', // iOS red color
   },
   createButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: 'white',
+    borderColor: '#57FF63', // The green color we've been using
   },
   cancelButtonText: {
-    color: '#007AFF',
+    color: '#FF3B30', // iOS red color
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Roboto',
   },
   createButtonText: {
-    color: 'white',
+    color: '#57FF63', // The green color we've been using
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Roboto',
   },
   cartsButton: {
-    backgroundColor: '#007AFF', // Changed to iOS blue
+    backgroundColor: '#57FF63', // Updated color
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -598,10 +602,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 15,
     borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: 'red',
   },
   closeButtonText: {
-    color: '#007AFF',
+    color: 'red',
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Roboto',

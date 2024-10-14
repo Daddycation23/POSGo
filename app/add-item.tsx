@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   imageButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#57FF63', // Updated color
     padding: 15,
     borderRadius: 5,
     flexDirection: 'row',
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   addButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#57FF63', // Updated color
     padding: 15,
     borderRadius: 5,
     flexDirection: 'row',

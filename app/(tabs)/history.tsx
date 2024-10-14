@@ -56,7 +56,7 @@ export default function History() {
             keyExtractor={(item) => item.id}
           />
         ) : (
-          <Text style={styles.emptyText}>No order history found</Text>
+          <Text style={styles.emptyText}>No items found</Text>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -159,6 +159,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
+    color: '#888', // Adding a consistent color
+    padding: 20, // Adding consistent padding
     fontFamily: 'Roboto',
   },
 });

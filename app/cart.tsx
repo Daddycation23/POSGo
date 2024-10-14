@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   removeButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#FF3B30', // Changed to red (iOS red color)
     padding: 10,
     borderRadius: 5,
   },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   checkoutButton: {
-    backgroundColor: '#34C759',
+    backgroundColor: '#57FF63', // Updated color
     padding: 15,
     borderRadius: 5,
   },

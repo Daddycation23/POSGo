@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveButton: {
-    backgroundColor: '#007AFF', // Changed to match the iOS blue color
+    backgroundColor: '#57FF63', // Updated color
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   cartItemButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#57FF63', // Updated color
     padding: 5,
     borderRadius: 5,
     marginLeft: 5,
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   addButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#57FF63', // Updated color
     padding: 10,
     borderRadius: 5,
   },
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   paidButton: {
-    backgroundColor: '#FF9500', // Orange color for the paid button
+    backgroundColor: '#57FF63', // Updated color
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
   deleteButton: {
-    backgroundColor: '#FF3B30', // Red color for the delete button
+    backgroundColor: '#FF3B30', // Changed to red (iOS red color)
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

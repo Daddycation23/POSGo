@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/POSGo-Icon.png",
-      "resizeMode": "contain",
+      "resizeMode": "native",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/POSGo-Icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.daddycation.POSGo"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +41,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8ada2d07-0635-4164-983e-288f864fe2e1"
+      }
     }
   }
 }
